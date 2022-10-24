@@ -6,14 +6,16 @@
       = {{ result }}
     </div>
     <div class="keyboard">
-      <button class="btn btn-secondary me-2" @click="result = Number(operand1) + Number(operand2)">+</button>
-      <button class="btn btn-secondary me-2" @click="result = operand1 - operand2">-</button>
-      <button class="btn btn-secondary me-2" @click="result = operand1 / operand2">/</button>
-      <button class="btn btn-secondary me-2" @click="result = operand1 * operand2">*</button>
-      <button class="btn btn-secondary me-2" @click="result = Math.pow(operand1, operand2)">x<sup>y</sup></button>
-      <button class="btn btn-secondary me-2" @click="result = Math.floor(operand1 / operand2)">/(целое)</button>
+      <button class="btn btn-secondary me-2" v-for="item of operands" @click="currentOperation=item">{{ item }}</button>
     </div>
+    <div class="alert alert-danger my-2" v-show="error">Ошибка! {{ error }}</div>
+
+    <ul class="list-group">
+      <li class="list-group-item" v-for="(log, index) in logs" v-bind:key="index">{{ log }}</li>
+    </ul>
+
   </div>
+
 </template>
 
 <script>
@@ -23,11 +25,62 @@ export default {
   name: 'App',
   data() {
     return {
+      operands: ['+', '-', '/', '*', '**', '/целое'],
+      currentOperation: "+",
       operand1: 0,
       operand2: 0,
-      result: 0
+      error: "",
+      logs: {},
     }
   },
+  computed: {
+    result() {
+      return this.calculate(this.currentOperation)
+    }
+  },
+  methods: {
+    calculate(operand) {
+      this.error = ""
+      switch (operand) {
+        case "+":
+          return this.sum()
+        case "-":
+          return this.minus()
+        case "/":
+          return this.divide()
+        case "*":
+          return this.mul()
+        case "**":
+          return this.pow()
+        case "/int":
+          return this.divInt()
+      }
+      this.$set(this.logs, Date.now(), `${this.operand1}${operand}${this.operand2}=${this.result}`)
+
+    },
+    sum() {
+      return Number(this.operand1) + Number(this.operand2)
+    },
+    minus() {
+      return this.operand1 - this.operand2
+    },
+    divide() {
+      if (this.operand2 === 0) {
+        this.error = "На ноль делить нельзя"
+        return
+      }
+      return this.operand1 / this.operand2
+    },
+    mul() {
+      return this.operand1 * this.operand2
+    },
+    pow() {
+      return Math.pow(this.operand1, this.operand2)
+    },
+    divInt() {
+      return Math.floor(this.operand1 / this.operand2)
+    }
+  }
   // components: {
   //   HelloWorld
   // }
@@ -35,7 +88,7 @@ export default {
 </script>
 
 <style lang="scss">
-input{
+input {
   max-width: 200px;
 }
 </style>
