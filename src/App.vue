@@ -3,8 +3,8 @@
     <h1>My personal costs</h1>
     <Button v-if="!openedAdd" @onClick="openedAdd=!openedAdd" :settings='{text:"ADD NEW COST"}'
     ></Button>
-    <NewCost v-if="openedAdd" @onAdd="add" ></NewCost>
-    <PaymentsDisplay class="w-50" :items="paymentsList" />
+    <NewCost v-if="openedAdd" @onAdd="add"></NewCost>
+    <PaymentsDisplay class="w-50" :items="paymentsList"/>
   </div>
 </template>
 
@@ -17,36 +17,31 @@ export default {
   name: 'App',
   data() {
     return {
-      openedAdd:false,
-      paymentsList:[]
+      openedAdd: false,
+      paymentsList: []
     }
   },
-  methods:{
-    add(el){
+  methods: {
+    add(el) {
       this.openedAdd = false
       this.paymentsList.push(el)
     },
-    fetchData () {
-      return [
-        {
+    fetchData() {
+      function generateItem(){
+        return  {
           date: '28.03.2020',
           category: 'Food',
-          value: 169,
-        },
-        {
-          date: '24.03.2020',
-          category: 'Transport',
-          value: 360,
-        },
-        {
-          date: '24.03.2020',
-          category: 'Food',
-          value: 532,
-        },
-      ]
+          value: Math.floor(Math.random()*1000),
+        }
+      }
+      const list = []
+      for (let i = 0; i < 30; i++) {
+        list.push(generateItem())
+      }
+      return list
     },
   },
-  created () {
+  created() {
     this.paymentsList = this.fetchData()
   },
   components: {
@@ -58,7 +53,7 @@ export default {
 </script>
 
 <style lang="scss">
-input{
+input {
   max-width: 200px;
 }
 </style>
